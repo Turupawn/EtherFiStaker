@@ -39,7 +39,7 @@ contract EtherFiStakerTest is Test {
         vm.startPrank(ETH_WHALE);
         // Des-stakeamos
         uint requestId = etherFiStaker.unstake(
-            etherFiStaker.stakeByAccount(ETH_WHALE)
+            etherFiStaker.sharesByAccount(ETH_WHALE)
         );
         vm.startPrank(WITHDRAWAL_ADMIN);
         // EtherFi finaliza nuestra request

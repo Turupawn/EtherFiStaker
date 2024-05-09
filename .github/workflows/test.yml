@@ -30,5 +30,5 @@ jobs:
 
       - name: Run Forge tests
         run: |
-          forge test -vvv --fork-url https://sepolia-rpc.scroll.io/
+          forge test -vvv --fork-url https://api.stateless.solutions/ethereum/v1/demo
         id: test

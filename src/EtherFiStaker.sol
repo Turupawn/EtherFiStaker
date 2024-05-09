@@ -29,8 +29,7 @@ contract EtherFiStaker {
     address payable LIQUIDITY_POOL;
     address WITHDRAW_REQUEST_NFT;
     address EETH_TOKEN;
-    mapping(address account => uint amount) public stakeByAccount;
-    uint public totalStake;
+    mapping(address account => uint amount) public sharesByAccount;
 
     constructor(address payable liquidityPool, address withdrawRequestNFT, address eETH) {
         LIQUIDITY_POOL = liquidityPool;
@@ -40,14 +39,12 @@ contract EtherFiStaker {
 
     function stake() public payable { // Prevent reentrancy
         uint shares = ILiquidityPool(LIQUIDITY_POOL).deposit{value: msg.value}();
-        totalStake += shares;
-        stakeByAccount[msg.sender] += shares;
+        sharesByAccount[msg.sender] += shares;
     }
 
     function unstake(uint shares) public returns(uint requestId) {
-        require(shares <= stakeByAccount[msg.sender], "Not enough stake");
-        totalStake -= shares;
-        stakeByAccount[msg.sender] -= shares;
+        require(shares <= sharesByAccount[msg.sender], "Not enough shares");
+        sharesByAccount[msg.sender] -= shares;
         uint amount = ILiquidityPool(LIQUIDITY_POOL).amountForShare(shares);
         IERC20(EETH_TOKEN).approve(LIQUIDITY_POOL, amount);
         return ILiquidityPool(LIQUIDITY_POOL).requestWithdraw(msg.sender, amount);
