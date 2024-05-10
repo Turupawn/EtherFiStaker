@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+
 interface ILiquidityPool { 
     function deposit() external payable returns (uint256);
     function requestWithdraw(address _recipient, uint256 _amount) external returns (uint256);
@@ -25,7 +27,7 @@ interface IERC20 {
     function transferFrom(address from, address to, uint256 value) external returns (bool);
 }
 
-contract EtherFiStaker {
+contract EtherFiStaker is ReentrancyGuard {
     address payable LIQUIDITY_POOL;
     address WITHDRAW_REQUEST_NFT;
     address EETH_TOKEN;
@@ -37,7 +39,7 @@ contract EtherFiStaker {
         EETH_TOKEN = eETH;
     }
 
-    function stake() public payable { // Prevent reentrancy
+    function stake() public payable nonReentrant() { // Prevent reentrancy
         uint shares = ILiquidityPool(LIQUIDITY_POOL).deposit{value: msg.value}();
         sharesByAccount[msg.sender] += shares;
     }
