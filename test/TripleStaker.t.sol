@@ -47,10 +47,10 @@ contract TripleStakerTest is Test {
 
         // Alice y Bob stakean por 100 días
         vm.startPrank(alice);
-        tripleStakerToken.approve(address(tripleStaker), 1000 ether);
-        tripleStaker.stake3X(1000 ether);
+        tripleStakerToken.approve(address(tripleStaker), 700 ether);
+        tripleStaker.stake3X(700 ether);
         vm.startPrank(bob);
-        tripleStakerToken.approve(address(tripleStaker), 0 ether);
+        tripleStakerToken.approve(address(tripleStaker), 300 ether);
         tripleStaker.stake3X(300 ether);
         skip(100 days);
         vm.startPrank(LIQUIDITY_POOL_MANAGER);
