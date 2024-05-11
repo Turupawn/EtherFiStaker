@@ -61,7 +61,7 @@ contract TripleStaker {
     uint public rewardRateDailyPercentage = 1000;
 
     constructor(address tripleStakingTokenAddress,
-                address payable liquidityPool, address withdrawRequestNFT, address eETHAddress // Etherfi
+                address liquidityPool, address withdrawRequestNFT, address eETHAddress // Etherfi
                 ) {
         eETH = IERC20(eETHAddress);
         tripleStakingToken = IERC20(tripleStakingTokenAddress);
@@ -70,7 +70,7 @@ contract TripleStaker {
         rewardGenesisTiemstamp = lastDayCalculatedTimestamp = block.timestamp;
 
         // Etherfi
-        LIQUIDITY_POOL = liquidityPool;
+        LIQUIDITY_POOL = payable(liquidityPool);
         WITHDRAW_REQUEST_NFT = withdrawRequestNFT;
     }
 
@@ -95,7 +95,7 @@ contract TripleStaker {
     }
     // External functions
 
-    function stake(uint amount) external updateReward() {
+    function stake3X(uint amount) external updateReward() {
         require(amount > 0, "Amount must be greater than 0.");
         totalDeposits += amount;
 
@@ -106,7 +106,7 @@ contract TripleStaker {
         tripleStakingToken.transferFrom(msg.sender, address(this), amount);
     }
 
-    function withdrawTripleStakingToken(uint amount) external updateReward() {
+    function withdraw(uint amount) external updateReward() {
         require(amount > 0, "No amount sent.");
         require(stakerData[msg.sender].amount > 0, "Sender has no deposits.");
         require(stakerData[msg.sender].amount >= amount, "Sender has no enough Triple Staking Token deposited to match withdraw amount.");

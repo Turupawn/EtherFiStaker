@@ -39,7 +39,7 @@ contract EtherFiStaker is ReentrancyGuard {
         EETH_TOKEN = eETH;
     }
 
-    function stake() public payable nonReentrant() { // Prevent reentrancy
+    function stake() public payable nonReentrant() {
         uint shares = ILiquidityPool(LIQUIDITY_POOL).deposit{value: msg.value}();
         sharesByAccount[msg.sender] += shares;
     }
