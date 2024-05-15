@@ -46,28 +46,34 @@ contract NFTRestakerTest is Test {
         // El team compra un NFT, simplemente porque startPrank requiere al menos una tx
         nftRestaker.mint{value: 0.01 ether}();
         // Alice y Bob compran 100 NFTs cada uno
+        vm.stopPrank();
         vm.startPrank(alice);
         for(uint i=0; i<100; i++)
             nftRestaker.mint{value: 0.01 ether}();
+        vm.stopPrank();
         vm.startPrank(bob);
         for(uint i=0; i<100; i++)
             nftRestaker.mint{value: 0.01 ether}();
         skip(100 days);
+        vm.stopPrank();
         vm.startPrank(LIQUIDITY_POOL_MANAGER);
         // Mientras tanto EtherFi aplica el rebase y los ingresos crecen
         ILiquidityPool(LIQUIDITY_POOL).rebase(100_000 ether);
+        vm.stopPrank();
         vm.startPrank(team);
         // Des-stakeamos
         uint requestId = nftRestaker.withdrawTeam();
+        vm.stopPrank();
         vm.startPrank(WITHDRAWAL_ADMIN);
         // EtherFi finaliza nuestra request
         IWithdrawRequestNFT(WITHDRAW_REQUEST_NFT).finalizeRequests(requestId);
+        vm.stopPrank();
         vm.startPrank(team);
         // Claimeamos nuestro ether
         IWithdrawRequestNFT(WITHDRAW_REQUEST_NFT).claimWithdraw(requestId);
         vm.stopPrank();
 
-        console.log("Staker balance after:");
+        console.log("Team balance after:");
         console.log(team.balance);
     }
 }

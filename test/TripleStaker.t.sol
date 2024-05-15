@@ -49,19 +49,24 @@ contract TripleStakerTest is Test {
         vm.startPrank(alice);
         tripleStakerToken.approve(address(tripleStaker), 700 ether);
         tripleStaker.stake3X(700 ether);
+        vm.stopPrank();
         vm.startPrank(bob);
         tripleStakerToken.approve(address(tripleStaker), 300 ether);
         tripleStaker.stake3X(300 ether);
         skip(100 days);
+        vm.stopPrank();
         vm.startPrank(LIQUIDITY_POOL_MANAGER);
         // Mientras tanto EtherFi aplica el rebase y los ingresos crecen
         ILiquidityPool(LIQUIDITY_POOL).rebase(100_000 ether);
+        vm.stopPrank();
         vm.startPrank(alice);
         // Des-stakeamos
         uint requestId = tripleStaker.claim();
+        vm.stopPrank();
         vm.startPrank(WITHDRAWAL_ADMIN);
         // EtherFi finaliza nuestra request
         IWithdrawRequestNFT(WITHDRAW_REQUEST_NFT).finalizeRequests(requestId);
+        vm.stopPrank();
         vm.startPrank(alice);
         // Claimeamos nuestro ether
         IWithdrawRequestNFT(WITHDRAW_REQUEST_NFT).claimWithdraw(requestId);

@@ -34,17 +34,21 @@ contract EtherFiStakerTest is Test {
         etherFiStaker.stake{value: 1 ether}();
         // Stakeamos 1 ether por 100 días
         skip(100 days);
+        vm.stopPrank();
         vm.startPrank(LIQUIDITY_POOL_MANAGER);
         // Mientras tanto EtherFi aplica el rebase y los ingresos crecen
         ILiquidityPool(LIQUIDITY_POOL).rebase(100_000 ether);
+        vm.stopPrank();
         vm.startPrank(alice);
         // Des-stakeamos
         uint requestId = etherFiStaker.unstake(
             etherFiStaker.sharesByAccount(alice)
         );
+        vm.stopPrank();
         vm.startPrank(WITHDRAWAL_ADMIN);
         // EtherFi finaliza nuestra request
         IWithdrawRequestNFT(WITHDRAW_REQUEST_NFT).finalizeRequests(requestId);
+        vm.stopPrank();
         vm.startPrank(alice);
         // Claimeamos nuestro ether
         IWithdrawRequestNFT(WITHDRAW_REQUEST_NFT).claimWithdraw(requestId);
